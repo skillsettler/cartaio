@@ -1,85 +1,103 @@
 'use client'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { Menu, X, Zap } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { cn } from '@/lib/utils'
+import { Menu, X } from 'lucide-react'
 
 interface NavProps {
   user?: { email?: string } | null
 }
 
-const tools = [
-  { label: 'Compress PDF', href: '/tools/compress-pdf' },
-  { label: 'Merge PDF', href: '/tools/merge-pdf' },
-  { label: 'Split PDF', href: '/tools/split-pdf' },
-  { label: 'Bank Statement', href: '/tools/bank-statement-converter' },
-  { label: 'Invoice Extractor', href: '/tools/invoice-extractor' },
+function LogoMark() {
+  return (
+    <svg width="28" height="32" viewBox="0 0 28 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 4 H18 L23 9 V29 H5 Z" fill="rgba(255,255,255,0.03)" transform="translate(0.8,0.8)" />
+      <path d="M4 3 H17 L22 8 V28 H4 Z" fill="rgba(255,255,255,0.07)" stroke="rgba(139,135,200,0.3)" strokeWidth="0.75" />
+      <path d="M17 3 L17 8 L22 8" stroke="rgba(139,135,200,0.25)" strokeWidth="0.75" fill="none" />
+      <path d="M17 3 L22 8 L17 8 Z" fill="rgba(255,255,255,0.06)" />
+      <path d="M4 4 Q4 3 5 3 H7.5 V28 H4 Z" fill="#7C3AED" />
+      <rect x="10.5" y="13" width="8" height="1.5" rx="0.75" fill="rgba(167,139,250,0.5)" />
+      <rect x="10.5" y="17" width="10" height="1.5" rx="0.75" fill="rgba(167,139,250,0.5)" />
+      <rect x="10.5" y="21" width="6.5" height="1.5" rx="0.75" fill="rgba(167,139,250,0.5)" />
+      <circle cx="5.75" cy="6" r="1.2" fill="rgba(255,255,255,0.4)" />
+    </svg>
+  )
+}
+
+const navLinks = [
+  { label: 'PDF Tools', href: '/#tools' },
+  { label: 'API', href: '/#api' },
+  { label: 'Why Cartaio', href: '/#why' },
+  { label: 'Pricing', href: '/#pricing' },
 ]
 
 export function Nav({ user }: NavProps) {
-  const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0A0618]/80 backdrop-blur-xl border-b border-white/10">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center">
-            <Zap className="w-4 h-4 text-white" />
-          </div>
-          <span className="font-bold text-white tracking-tight">Cartaio</span>
-        </Link>
-
-        <div className="hidden md:flex items-center gap-6">
-          <Link href="/tools/compress-pdf" className="text-white/60 hover:text-white text-sm transition-colors">Tools</Link>
-          <Link href="/pricing" className="text-white/60 hover:text-white text-sm transition-colors">Pricing</Link>
-          <Link href="/docs" className="text-white/60 hover:text-white text-sm transition-colors">API Docs</Link>
+    <nav style={{
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      padding: '0 56px', height: '64px',
+      background: 'rgba(13,10,32,.9)', backdropFilter: 'blur(20px)',
+      borderBottom: '1px solid rgba(139,135,200,.22)',
+    }}>
+      <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '9px', textDecoration: 'none' }}>
+        <LogoMark />
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
+          <span style={{ fontFamily: "'Instrument Serif', serif", fontSize: '21px', fontWeight: 400, color: '#FFFFFF', letterSpacing: '-0.01em', lineHeight: 1 }}>Cartaio</span>
+          <span style={{ fontFamily: "'DM Mono', monospace", fontSize: '11px', color: '#9F6BF5', fontWeight: 500 }}>.io</span>
         </div>
+      </Link>
 
-        <div className="hidden md:flex items-center gap-3">
-          {user ? (
-            <Link href="/dashboard">
-              <Button variant="secondary" size="sm">Dashboard</Button>
-            </Link>
-          ) : (
-            <>
-              <Link href="/login">
-                <Button variant="ghost" size="sm">Sign in</Button>
-              </Link>
-              <Link href="/signup">
-                <Button size="sm">Get started free</Button>
-              </Link>
-            </>
-          )}
-        </div>
+      {/* Desktop links */}
+      <ul style={{ display: 'flex', alignItems: 'center', gap: '36px', listStyle: 'none', margin: 0, padding: 0 }} className="hidden md:flex">
+        {navLinks.map(({ label, href }) => (
+          <li key={href}>
+            <Link href={href} style={{ fontSize: '14px', fontWeight: 500, color: 'rgba(255,255,255,.75)', textDecoration: 'none', fontFamily: "'Urbanist', sans-serif", transition: 'color .18s' }}
+              onMouseEnter={e => (e.currentTarget.style.color = '#fff')}
+              onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,.75)')}
+            >{label}</Link>
+          </li>
+        ))}
+        <li>
+          <Link href={user ? '/dashboard' : '/signup'} style={{
+            background: '#7C3AED', color: '#fff', padding: '9px 22px',
+            borderRadius: '100px', fontWeight: 600, fontFamily: "'Urbanist', sans-serif",
+            textDecoration: 'none', fontSize: '14px',
+            boxShadow: '0 0 20px rgba(124,58,237,.45)', transition: 'background .18s',
+          }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#9F6BF5')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#7C3AED')}
+          >{user ? 'Dashboard' : 'Try free'}</Link>
+        </li>
+      </ul>
 
-        <button
-          className="md:hidden text-white/70 hover:text-white"
-          onClick={() => setMobileOpen(!mobileOpen)}
-        >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
+      {/* Mobile toggle */}
+      <button
+        className="md:hidden"
+        onClick={() => setMobileOpen(!mobileOpen)}
+        style={{ color: 'rgba(255,255,255,.7)', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}
+      >
+        {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+      </button>
 
+      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#13102B] border-t border-white/10 px-6 py-4 space-y-4">
-          {tools.map(t => (
-            <Link key={t.href} href={t.href} className="block text-white/70 hover:text-white py-2 text-sm" onClick={() => setMobileOpen(false)}>
-              {t.label}
+        <div style={{
+          position: 'absolute', top: '64px', left: 0, right: 0,
+          background: '#1A1035', borderTop: '1px solid rgba(139,135,200,.22)',
+          padding: '16px 20px',
+        }}>
+          {navLinks.map(({ label, href }) => (
+            <Link key={href} href={href} onClick={() => setMobileOpen(false)}
+              style={{ display: 'block', color: 'rgba(255,255,255,.7)', textDecoration: 'none', padding: '12px 0', fontSize: '14px', borderBottom: '1px solid rgba(255,255,255,.08)', fontFamily: "'Urbanist', sans-serif" }}>
+              {label}
             </Link>
           ))}
-          <div className="pt-2 border-t border-white/10 flex flex-col gap-2">
-            {user ? (
-              <Link href="/dashboard"><Button className="w-full" size="sm">Dashboard</Button></Link>
-            ) : (
-              <>
-                <Link href="/login"><Button variant="ghost" className="w-full" size="sm">Sign in</Button></Link>
-                <Link href="/signup"><Button className="w-full" size="sm">Get started free</Button></Link>
-              </>
-            )}
-          </div>
+          <Link href={user ? '/dashboard' : '/signup'} onClick={() => setMobileOpen(false)}
+            style={{ display: 'block', marginTop: '12px', background: '#7C3AED', color: '#fff', textAlign: 'center', padding: '11px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '14px', fontFamily: "'Urbanist', sans-serif" }}>
+            {user ? 'Dashboard' : 'Try free'}
+          </Link>
         </div>
       )}
     </nav>
